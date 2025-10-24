@@ -12,86 +12,90 @@ import java.io.BufferedReader;
 import java.util.List;
 
 public class TricolController implements Controller {
+
     private TricolService tricolService;
+    private ObjectMapper mapper; // inject it
 
     public void setTricolService(TricolService tricolService) {
         this.tricolService = tricolService;
     }
 
+    public void setMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("application/json");
-        ObjectMapper mapper = new ObjectMapper();
+        String method = request.getMethod();
 
-        if ("GET".equalsIgnoreCase(request.getMethod())){
+        if ("GET".equalsIgnoreCase(method)) {
             String paramId = request.getParameter("id");
 
-            if (paramId != null){
-                int id = Integer.valueOf(paramId);
+            if (paramId != null) {
+                int id = Integer.parseInt(paramId);
                 Tricol tricol = tricolService.getById(id);
                 mapper.writeValue(response.getWriter(), tricol);
-            }else {
+            } else {
                 List<Tricol> tricols = tricolService.getAll();
                 mapper.writeValue(response.getWriter(), tricols);
             }
             return null;
         }
 
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        if ("POST".equalsIgnoreCase(method)) {
             BufferedReader reader = request.getReader();
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             String line;
-
             while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
+                sb.append(line);
             }
-            String body = stringBuilder.toString();
-            Tricol tricol = mapper.readValue(body, Tricol.class);
-            tricolService.save(tricol); // save() returns void
+            Tricol tricol = mapper.readValue(sb.toString(), Tricol.class);
+            tricolService.save(tricol);
 
-            response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.getWriter().write("{\"message\":\"Tricol saved successfully\"}");
             return null;
         }
 
-        if ("PUT".equalsIgnoreCase(request.getMethod())) {
+        if ("PUT".equalsIgnoreCase(method)) {
             String paramId = request.getParameter("id");
             if (paramId != null) {
                 int id = Integer.parseInt(paramId);
 
                 BufferedReader reader = request.getReader();
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
+                    sb.append(line);
                 }
-                String body = stringBuilder.toString();
-                Tricol tricol = mapper.readValue(body, Tricol.class);
+                Tricol tricol = mapper.readValue(sb.toString(), Tricol.class);
                 tricolService.update(id, tricol);
 
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_CREATED);
                 response.getWriter().write("{\"message\":\"Tricol updated successfully\"}");
-                return null;
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"message\":\"ID parameter is required for PUT\"}");
             }
+            return null;
         }
 
-
-
-        if ("DELETE".equalsIgnoreCase(request.getMethod())){
+        if ("DELETE".equalsIgnoreCase(method)) {
             String paramId = request.getParameter("id");
-            if (paramId != null){
-                int id = Integer.valueOf(paramId);
+            if (paramId != null) {
+                int id = Integer.parseInt(paramId);
                 tricolService.delete(id);
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_CREATED);
+
                 response.getWriter().write("{\"message\":\"Tricol deleted successfully\"}");
-                return null;
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"message\":\"ID parameter is required for DELETE\"}");
             }
+            return null;
         }
 
         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        response.getWriter().write("{\"message\":\"Method not allowed\"}");
         return null;
     }
 }
