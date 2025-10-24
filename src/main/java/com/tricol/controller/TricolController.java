@@ -37,52 +37,56 @@ public class TricolController implements Controller {
             return null;
         }
 
-        if("POST".equalsIgnoreCase(request.getMethod())){
-            BufferedReader bufferedReader = request.getReader();
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            BufferedReader reader = request.getReader();
             StringBuilder stringBuilder = new StringBuilder();
             String line;
 
-            while ((line = bufferedReader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
             }
             String body = stringBuilder.toString();
             Tricol tricol = mapper.readValue(body, Tricol.class);
-            tricolService.save(tricol);
-            ModelAndView view = new ModelAndView("jsonView");
-            return view.addObject("Message", body);
+            tricolService.save(tricol); // save() returns void
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.getWriter().write("{\"message\":\"Tricol saved successfully\"}");
+            return null;
         }
 
-        if ("PUT".equalsIgnoreCase(request.getMethod())){
+        if ("PUT".equalsIgnoreCase(request.getMethod())) {
             String paramId = request.getParameter("id");
-            if (paramId != null){
-                int id = Integer.valueOf(paramId);
+            if (paramId != null) {
+                int id = Integer.parseInt(paramId);
+
                 BufferedReader reader = request.getReader();
                 StringBuilder stringBuilder = new StringBuilder();
                 String line;
-                while ((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line);
                 }
                 String body = stringBuilder.toString();
-
                 Tricol tricol = mapper.readValue(body, Tricol.class);
                 tricolService.update(id, tricol);
-                ModelAndView view = new ModelAndView("jsonView");
-                return view.addObject("Message", body);
-            }else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_CREATED);
+                response.getWriter().write("{\"message\":\"Tricol updated successfully\"}");
                 return null;
             }
         }
+
+
 
         if ("DELETE".equalsIgnoreCase(request.getMethod())){
             String paramId = request.getParameter("id");
             if (paramId != null){
                 int id = Integer.valueOf(paramId);
                 tricolService.delete(id);
-                response.getWriter().write("{\"status\":\"deleted\"}");
-                return null;
-            }else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_CREATED);
+                response.getWriter().write("{\"message\":\"Tricol deleted successfully\"}");
                 return null;
             }
         }
