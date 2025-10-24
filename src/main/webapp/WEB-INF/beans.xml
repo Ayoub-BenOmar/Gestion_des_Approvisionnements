@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <mvc:annotation-driven/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <context:component-scan base-package="com.tricol.repository"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
@@ -29,19 +41,23 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <jpa:repositories base-package="com.tricol.repository"
-                      transaction-manager-ref="transactionManager"
-                      entity-manager-factory-ref="entityManagerFactory" />
-
-
     <bean id="tricolService" class="com.tricol.service.TricolService">
-        <property name="tricolRepository" ref="tricolRepository" />
+        <property name="tricolDao" ref="tricolDao" />
     </bean>
 
     <bean id="tricolController" class="com.tricol.controller.TricolController">
         <property name="tricolService" ref="tricolService"/>
     </bean>
 
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="0"/>
+        <property name="mappings">
+            <props>
+                <prop key="/tricol">tricolController</prop>
+            </props>
+        </property>
+    </bean>
 
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
 
 </beans>
