@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "6573cede-bb88-441e-8162-4a12781533f8",
+		"name": "Tricol Spring Core",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43014823"
+	},
+	"item": [
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"societe\": \"Tricol\",\r\n  \"adresse\": \"Agadir\",\r\n  \"contact\": \"Zakaria\",\r\n  \"email\": \"zakaria@tricol.ma\",\r\n  \"telephone\": \"0658883645\",\r\n  \"ville\": \"El jadida\",\r\n  \"ice\": \"987654321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/Tricol/api/tricol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"Tricol",
+						"api",
+						"tricol"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/Tricol/api/tricol?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"Tricol",
+						"api",
+						"tricol"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/Tricol/api/tricol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"Tricol",
+						"api",
+						"tricol"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"societe\": \"Tricol\",\r\n  \"adresse\": \"Agadir\",\r\n  \"contact\": \"Zakaria\",\r\n  \"email\": \"zakaria@tricol.ma\",\r\n  \"telephone\": \"0658883645\",\r\n  \"ville\": \"El jadida\",\r\n  \"ice\": \"987654321\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/Tricol/api/tricol?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"Tricol",
+						"api",
+						"tricol"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"societe\": \"Tricol\",\r\n  \"adresse\": \"Agadir\",\r\n  \"contact\": \"Zakaria\",\r\n  \"email\": \"zakaria@tricol.ma\",\r\n  \"telephone\": \"0658883645\",\r\n  \"ville\": \"El jadida\",\r\n  \"ice\": \"987654321\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/Tricol/api/tricol?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"Tricol",
+						"api",
+						"tricol"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
