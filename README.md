@@ -93,13 +93,13 @@ L’application est basée sur une **architecture en couches** :
 
 Les endpoints REST suivants sont exposés :
 
-| Méthode | Endpoint | Description |
-|----------|-----------|-------------|
-| **GET** | `/Tricol/api/tricol` | Récupérer la liste des fournisseurs |
-| **GET** | `/Tricol/api/tricol?id=1` | Récupérer un fournisseur par ID |
-| **POST** | `/Tricol/api/tricol` | Ajouter un nouveau fournisseur |
-| **PUT** | `/Tricol/api/tricol?id=1` | Modifier un fournisseur existant |
-| **DELETE** | `/Tricol/api/tricol?id=1` | Supprimer un fournisseur |
+| Méthode | Endpoint                          | Description |
+|----------|-----------------------------------|-------------|
+| **GET** | `/Tricol_war_exploded/tricols`    | Récupérer la liste des fournisseurs |
+| **GET** | `/Tricol_war_exploded/tricols/id` | Récupérer un fournisseur par ID |
+| **POST** | `/Tricol_war_exploded/tricols`              | Ajouter un nouveau fournisseur |
+| **PUT** | `/Tricol_war_exploded/tricols/id`         | Modifier un fournisseur existant |
+| **DELETE** | `/Tricol_war_exploded/tricols/id`         | Supprimer un fournisseur |
 
 ---
 
