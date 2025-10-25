@@ -1,101 +1,83 @@
 package com.tricol.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tricol.model.Tricol;
 import com.tricol.service.TricolService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
 import java.util.List;
+import java.util.Optional;
 
-public class TricolController implements Controller {
+@RestController
+@RequestMapping("/tricols")
+public class TricolController {
 
-    private TricolService tricolService;
-    private ObjectMapper mapper; // inject it
 
-    public void setTricolService(TricolService tricolService) {
-        this.tricolService = tricolService;
+    @Autowired
+    private TricolService TricolService;
+
+    public TricolController(TricolService TricolService) {
+        this.TricolService = TricolService;
     }
 
-    public void setMapper(ObjectMapper mapper) {
-        this.mapper = mapper;
+    @PostMapping
+    public String createFournisseur(@RequestBody Tricol fournisseur) {
+        TricolService.save(fournisseur);
+        return "Fournisseur ajouté avec succès" + fournisseur;
     }
 
-    @Override
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.setContentType("application/json");
-        String method = request.getMethod();
-
-        if ("GET".equalsIgnoreCase(method)) {
-            String paramId = request.getParameter("id");
-
-            if (paramId != null) {
-                int id = Integer.parseInt(paramId);
-                Tricol tricol = tricolService.getById(id);
-                mapper.writeValue(response.getWriter(), tricol);
-            } else {
-                List<Tricol> tricols = tricolService.getAll();
-                mapper.writeValue(response.getWriter(), tricols);
-            }
-            return null;
-        }
-
-        if ("POST".equalsIgnoreCase(method)) {
-            BufferedReader reader = request.getReader();
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            Tricol tricol = mapper.readValue(sb.toString(), Tricol.class);
-            tricolService.save(tricol);
-
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().write("{\"message\":\"Tricol saved successfully\"}");
-            return null;
-        }
-
-        if ("PUT".equalsIgnoreCase(method)) {
-            String paramId = request.getParameter("id");
-            if (paramId != null) {
-                int id = Integer.parseInt(paramId);
-
-                BufferedReader reader = request.getReader();
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                Tricol tricol = mapper.readValue(sb.toString(), Tricol.class);
-                tricolService.update(id, tricol);
-
-                response.getWriter().write("{\"message\":\"Tricol updated successfully\"}");
-            } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"message\":\"ID parameter is required for PUT\"}");
-            }
-            return null;
-        }
-
-        if ("DELETE".equalsIgnoreCase(method)) {
-            String paramId = request.getParameter("id");
-            if (paramId != null) {
-                int id = Integer.parseInt(paramId);
-                tricolService.delete(id);
-
-                response.getWriter().write("{\"message\":\"Tricol deleted successfully\"}");
-            } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"message\":\"ID parameter is required for DELETE\"}");
-            }
-            return null;
-        }
-
-        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        response.getWriter().write("{\"message\":\"Method not allowed\"}");
-        return null;
+    @GetMapping
+    public List<Tricol> getAllFournisseur() {
+        return TricolService.findAll();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Tricol> getFournisseurById(@PathVariable("id") int id) {
+        Optional<Tricol> fournisseur = TricolService.findById(id);
+        return fournisseur.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteFournisseurById(@PathVariable int id) {
+        Optional<Tricol> fournisseur = TricolService.findById(id);
+        if (fournisseur.isPresent()) {
+            TricolService.delete(fournisseur.get());
+            return "Fournisseur supprimé avec succès";
+        } else {
+            return "Fournisseur non trouvé";
+        }
+    }
+
+    @PutMapping("/{id}")
+    public String updateFournisseur(@PathVariable int id, @RequestBody Tricol fournisseur) {
+        Optional<Tricol> existingOpt = TricolService.findById(id);
+        if (existingOpt.isPresent()) {
+            Tricol existing = existingOpt.get();
+            existing.setIce(fournisseur.getIce());
+            existing.setContact(fournisseur.getContact());
+            existing.setSociete(fournisseur.getSociete());
+            existing.setAdresse(fournisseur.getAdresse());
+            existing.setTelephone(fournisseur.getTelephone());
+            existing.setEmail(fournisseur.getEmail());
+            existing.setVille(fournisseur.getVille());
+
+            TricolService.update(existing);
+            return "Fournisseur mis à jour avec succès";
+        } else {
+            return "Fournisseur non trouvé";
+        }
+    }
+
+    @GetMapping("/nom")
+    public ResponseEntity<List<Tricol>> getFournisseurByNom(@RequestParam("nom") String nom) {
+        List<Tricol> fournisseurs = TricolService.findByName(nom);
+        return ResponseEntity.ok(fournisseurs);
+    }
+
+    @GetMapping("/email")
+    public Tricol getFournisseurByEmail(@RequestParam("email") String email) {
+        return TricolService.findByEmail(email);
+    }
+
 }

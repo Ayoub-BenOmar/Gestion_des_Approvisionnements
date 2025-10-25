@@ -1,23 +1,24 @@
 package com.tricol.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "tricol")
 public class Tricol {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String societe;
     private String adresse;
-    private String Contact;
+    private String contact;
     private String email;
     private String telephone;
     private String ville;
-    private String ICE;
+    private String ice;
+
+    public Tricol() {}
 
     public Integer getId() {
         return id;
@@ -44,11 +45,11 @@ public class Tricol {
     }
 
     public String getContact() {
-        return Contact;
+        return contact;
     }
 
     public void setContact(String contact) {
-        Contact = contact;
+        this.contact = contact;
     }
 
     public String getEmail() {
@@ -75,11 +76,11 @@ public class Tricol {
         this.ville = ville;
     }
 
-    public String getICE() {
-        return ICE;
+    public String getIce() {
+        return ice;
     }
 
-    public void setICE(String ICE) {
-        this.ICE = ICE;
+    public void setIce(String ice) {
+        this.ice = ice;
     }
 }

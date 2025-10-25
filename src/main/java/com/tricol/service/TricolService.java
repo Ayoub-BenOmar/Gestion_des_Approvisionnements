@@ -1,34 +1,44 @@
 package com.tricol.service;
 
 import com.tricol.model.Tricol;
-import com.tricol.repository.TricolDao;
+import com.tricol.repository.TricolRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TricolService {
-    private TricolDao tricolDao;
 
-    public void setTricolDao(TricolDao tricolDao) {
-        this.tricolDao = tricolDao;
+    private final TricolRepository fournisseurRepository;
+
+    public TricolService(TricolRepository fournisseurRepository) {
+        this.fournisseurRepository = fournisseurRepository;
     }
 
-    public List<Tricol> getAll() {
-        return tricolDao.findAll();
+    public  void save(Tricol fournisseur) {
+        fournisseurRepository.save(fournisseur);
     }
 
-    public Tricol getById(Integer id) {
-        return tricolDao.findById(id);
+    public Optional<Tricol> findById(int id) {
+        Optional<Tricol> fournisseur=fournisseurRepository.findById(id);;
+        return fournisseur;
     }
 
-    public void save(Tricol tricol) {
-        tricolDao.save(tricol);
+    public List<Tricol> findAll() {
+        return fournisseurRepository.findAll();
     }
 
-    public void update(Integer id, Tricol tricol) {
-        tricolDao.update(id, tricol);
+    public void delete(Tricol fournisseur) {
+        fournisseurRepository.delete(fournisseur);
     }
 
-    public void delete(Integer id) {
-        tricolDao.delete(id);
+    public void update(Tricol fournisseur) {
+        fournisseurRepository.save(fournisseur);
     }
+
+    public List<Tricol> findByName(String name) {return fournisseurRepository.findByContact(name) ; };
+    public Tricol findByEmail(String email) {return fournisseurRepository.findByEmail(email) ;};
+
+
+
+
 }
